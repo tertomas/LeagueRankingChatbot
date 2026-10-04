@@ -32,7 +32,6 @@ def create_sql_prompt(question, semantic_layer, universities, subjects):
         IMPORTANT:
         This function is only used for questions that require querying the database.
         If the user asks to explain the meaning of a metric, do not use this function.
-
         You MUST NOT answer the user's question.
         You MUST NOT use your own knowledge.
         You MUST only use information contained in the database schema
@@ -53,6 +52,8 @@ def create_sql_prompt(question, semantic_layer, universities, subjects):
 
         RULES:
         - Return ONLY the SQL query.
+        - READ-ONLY: You MUST ONLY generate SELECT statements. NEVER generate INSERT, UPDATE, 
+        DELETE, DROP, or ALTER. If asked to modify data, return CANNOT_ANSWER.
         - Do not use markdown.
         - Do not explain the query.
         - The semantic layer contains two names for each field:
@@ -169,32 +170,6 @@ def create_sql_prompt(question, semantic_layer, universities, subjects):
         'King''s College London'
 
         CROSS-TABLE QUESTIONS:
-        - If the user asks for subject-level information together with
-        overall university information, you MUST query both
-        `subject_areas` and `ranking`.
-
-        - Join the tables using:
-        subject_areas.university_name = ranking.university_name
-        AND subject_areas.ranking_year = ranking.ranking_year.
-
-        - Never join the tables only on university_name.
-        - When the user specifies a year, apply the same year filter
-        to both tables.
-
-        - For questions such as:
-        "Give me the top 5 subjects in 2014 and compare them with
-        the overall ranking of the university",
-        return at least:
-            subject_areas.subject_name,
-            subject_areas.university_name,
-            subject_areas.subject_rank_current,
-            ranking.rank_current,
-            ranking.ranking_year.
-
-        - "Best ranked subject" means the lowest
-        `subject_rank_current` value.
-        - Therefore rank 1 is better than rank 2, rank 2 is better than rank 3, etc.CROSS-TABLE QUESTIONS:
-
         - If the user asks for subject-level information together with
         overall university information, you MUST query both
         `subject_areas` and `ranking`.
