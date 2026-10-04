@@ -414,6 +414,15 @@ default_behavior:
       requested, perform a standard JOIN between the two tables. 
       NEVER use subqueries matching years to link the tables
 
+  duckdb_dialect_rule:
+    instruction: >
+      CRITICAL: You are querying a DuckDB database. DuckDB does NOT support 
+      the 'LIMIT N BY column' syntax. If you need to find the Top N records 
+      per category or per year (e.g., "Top 3 universities each year"), you 
+      MUST use the standard QUALIFY clause with a window function. 
+      Example: QUALIFY ROW_NUMBER() OVER (PARTITION BY ranking_year ORDER BY 
+      rank_current ASC) <= 3
+
 knowledge_graph:
 
   - name: oxbridge
@@ -502,50 +511,4 @@ knowledge_graph:
       Institution names must match the source database exactly.
 
 
-  - name: top_3
 
-    terms:
-      - top 3
-      - top three
-      - top-three
-      - top three universities
-
-    sql_rule: >
-      "rank_current" <= 3
-
-  - name: top_5
-
-    terms:
-      - top 5
-      - top five
-      - top-five
-      - top five universities
-
-    sql_rule: >
-      "rank_current" <= 5
-
-  - name: top_10
-
-    terms:
-      - top 10
-      - top ten
-      - top-ten
-      - top ten universities
-
-    sql_rule: >
-      "rank_current" <= 10
-
-  - name: number_one
-
-    terms:
-      - best university
-      - number 1
-      - number one
-      - ranked first
-      - rank first
-      - highest ranked
-      - highest-ranking university
-      - top university
-
-    sql_rule: >
-      "rank_current" = 1
