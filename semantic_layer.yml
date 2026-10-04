@@ -1,0 +1,551 @@
+tables:
+
+  - name: guardian_ranking
+    sql_table: ranking
+
+    description: >
+      Main Guardian overall university league table.
+      Contains the overall ranking of UK universities and
+      university-level performance metrics in years 2013-2015.
+
+    entity:
+      name: university
+      sql_column: "university_name"
+
+      synonyms:
+        - university
+        - universities
+        - uni
+        - college
+        - school
+        - institution
+
+    dimensions:
+
+      - name: ranking_year
+        sql_column: "ranking_year"
+        description: >
+          Year of the overall Guardian university ranking.
+          CRITICAL RULE: If the user does not explicitly filter 
+          by a specific year, you MUST include this column in your 
+          SELECT and GROUP BY clauses to show the breakdown for all years.
+
+        synonyms:
+          - ranking year
+          - year
+          - overall ranking year
+
+
+    metrics:
+
+      - name: overall_rank
+        sql_column: "rank_current"
+        data_type: integer
+        type: min
+        description: >
+          Overall Guardian ranking of the university.
+          Rank 1 represents the highest-ranked university.
+          Lower numerical values represent better rankings.
+          Use this field only when the user asks for the overall university
+          ranking, not a subject-area ranking.
+
+        synonyms:
+          - overall rank
+          - overall ranking
+          - university rank
+          - university ranking
+          - league table rank
+          - league table ranking
+          - position
+          - overall position
+          - rank
+          - guardian rank
+
+
+      - name: overall_score
+        sql_column: "guardian_score"
+        type: average
+        data_type: numeric
+        description: >
+          Overall Guardian score for the university.
+
+        synonyms:
+          - overall score
+          - Guardian score
+          - guardian score
+          - score
+
+
+      - name: teaching_satisfaction
+        sql_column: "satisfaction_teaching"
+        data_type: numeric
+        type: average
+        description: >
+          Percentage of satisfaction with the quality
+          of teaching in a national survey.
+
+        synonyms:
+          - teaching satisfaction
+          - satisfaction with teaching
+          - satisfied with teaching
+          - student satisfaction with teaching
+          - teaching
+
+
+      - name: university_satisfaction
+        sql_column: "satisfaction_overall"
+        data_type: numeric
+        type: average
+        description: >
+          Overall satisfaction of students with the university 
+          in a national survey.
+
+        synonyms:
+          - university satisfaction
+          - satisfaction with university
+          - satisfied with university
+          - student satisfaction with university
+
+
+      - name: feedback_satisfaction
+        sql_column: "satisfaction_feedback"
+        data_type: numeric
+        type: average
+        description: >
+          Percentage of satisfaction with assessment
+          and feedback given by the university in a national survey.
+
+        synonyms:
+          - feedback satisfaction
+          - satisfaction with feedback
+          - satisfied with feedback
+          - assessment satisfaction
+          - feedback
+
+
+      - name: student_staff_ratio
+        sql_column: "student_staff_ratio"
+        data_type: numeric
+        type: average
+        description: >
+          Number of students per member of academic staff.
+          Lower values represent a lower student-to-staff ratio.
+
+        synonyms:
+          - student staff ratio
+          - student-to-staff ratio
+          - student to staff ratio
+          - students per staff member
+          - staff ratio
+
+
+      - name: spend_per_student
+        sql_column: "spend_per_student"
+        data_type: numeric
+        type: average
+        description: >
+          Guardian measure of university spending per student.
+
+        synonyms:
+          - spend per student
+          - spending per student
+          - university spending
+          - spending
+
+
+      - name: entry_tariff
+        sql_column: "entry_tariff"
+        data_type: numeric
+        type: average
+        description: >
+          Average UCAS tariff points of students entering
+          the university.
+
+        synonyms:
+          - entry tariff
+          - average entry tariff
+          - entry points
+          - UCAS points
+          - entry requirements
+          - admission points
+
+
+      - name: value_added
+        sql_column: "value_added_score"
+        data_type: numeric
+        type: average
+        description: >
+          Guardian value-added score comparing students'
+          entry characteristics with their subsequent outcomes.
+
+        synonyms:
+          - value added
+          - value added score
+
+      - name: career_prospects
+        sql_column: "career_prospects"
+        data_type: numeric
+        type: average
+        description: >
+          Percentage of graduates who believe 
+          their university education has helped them in their 
+          career prospects.
+
+        synonyms:
+          - career prospects
+          - graduate prospects
+          - employment prospects
+          - graduate employment
+
+
+  - name: guardian_subjects
+    sql_table: subject_areas
+
+    description: >
+      Guardian university league tables for individual
+      subject areas. Contains university rankings and
+      performance metrics within specific subjects in
+      years 2013-2015.
+
+    entity:
+      name: university
+      sql_column: "university_name"
+
+      synonyms:
+        - university
+        - universities
+        - uni
+        - college
+        - school
+        - institution
+
+    dimensions:
+
+      - name: subject
+        sql_column: "subject_name"
+        description: >
+          Specific Guardian subject area, for example
+          Computer Science, Business & Management, Law,
+          Economics, or another subject area in the data.
+
+        synonyms:
+          - subject
+          - subject area
+          - study area
+          - field
+          - discipline
+          - course area
+
+
+      - name: subject_ranking_year
+        sql_column: "ranking_year"
+        description: >
+          Year of the Guardian subject-area ranking.
+          CRITICAL RULE: If the user does not explicitly filter 
+          by a specific year, you MUST include this column in your 
+          SELECT and GROUP BY clauses to show the breakdown for all years.
+
+        synonyms:
+          - subject ranking year
+          - subject year
+          - ranking year
+          - year
+
+
+    metrics:
+
+      - name: subject_rank
+        sql_column: "subject_rank_current"
+        data_type: integer
+        type: min
+        description: >
+          Ranking of the university within a specific
+          subject area. Rank 1 represents the highest-ranked
+          university for that subject.
+          Use this field when the user asks for the best, second best,
+          highest ranked, lowest ranked, or ranking position of a university
+          within a subject.
+
+        synonyms:
+          - subject rank
+          - subject ranking
+          - ranking in subject
+          - rank in subject
+          - position in subject
+
+
+      - name: subject_score
+        sql_column: "guardian_score"
+        data_type: numeric
+        type: average
+        description: >
+          Guardian score of the university within the
+          selected subject area.
+
+        synonyms:
+          - subject score
+          - Guardian subject score
+          - score for subject
+
+
+      - name: subject_teaching_satisfaction
+        sql_column: "satisfaction_teaching"
+        type: average
+        data_type: numeric
+        description: >
+          Percentage of students satisfied with teaching
+          within the selected subject area.
+
+        synonyms:
+          - subject teaching satisfaction
+          - teaching satisfaction
+          - satisfaction with teaching
+          - satisfied with teaching
+
+      - name: satisfaction_overall
+        sql_column: "satisfaction_overall"
+        data_type: numeric
+        type: average
+        description: >
+          Percentage of students overall satisfied with the course within the subject area.
+        
+        synonyms:
+          - overall course satisfaction
+          - satisfied overall with course
+
+      - name: spend_per_student
+        sql_column: "spend_per_student"
+        data_type: numeric
+        type: average
+        description: >
+          Expenditure per Full-Time Equivalent (FTE) student within the subject area.
+        
+        synonyms:
+          - FTE expenditure
+          - spending per student
+
+      - name: student_staff_ratio
+        sql_column: "student_staff_ratio"
+        data_type: numeric
+        type: average
+        description: >
+          Number of students per member of academic staff in the subject area.
+        
+        synonyms:
+          - subject staff ratio
+          - student to staff ratio
+
+      - name: career_prospects
+        sql_column: "career_prospects"
+        data_type: numeric
+        type: average
+        description: >
+          Percentage of graduates who believe given course 
+          has helped them in their career prospects.
+
+        synonyms:
+          - subject career prospects
+          - graduate prospects
+
+      - name: value_added_score
+        sql_column: "value_added_score"
+        data_type: numeric
+        type: average
+        description: >
+          Guardian value-added score comparing students' entry characteristics 
+          with outcomes in this subject.
+        
+        synonyms:
+          - subject value added
+
+      - name: entry_tariff
+        sql_column: "entry_tariff"
+        data_type: numeric
+        type: average
+        description: >
+          Average UCAS tariff points of students entering the specific subject course.
+        
+        synonyms:
+          - subject entry tariff
+          - entry points
+
+      - name: satisfaction_assessment
+        sql_column: "satisfaction_assessment"
+        data_type: numeric
+        type: average
+        description: >
+          Percentage of students satisfied with assessment and feedback
+          in the selected subject area.
+        
+        synonyms:
+          - assessment satisfaction
+          - feedback satisfaction
+
+joins:
+
+  - name: ranking_to_subjects
+    left_table: guardian_ranking
+    right_table: guardian_subjects
+
+    condition: >
+      ranking."university_name" = subject_areas."university_name" AND
+      ranking."ranking_year" = subject_areas."ranking_year"
+
+    type: left
+
+default_behavior:
+  unspecified_year_rule:
+    target_columns: ["ranking_year"]
+    instruction: >
+      Whenever querying BOTH 'guardian_ranking' and 'guardian_subjects' tables, 
+      if the user does not explicitly filter by a specific year, 
+      you MUST NOT aggregate data across multiple years into a single number. 
+      Instead, you MUST include "ranking_year" in your SELECT and GROUP BY clauses 
+      so that the output explicitly lists the results for each year separately.
+
+  subject_routing_rule:
+    instruction: >
+      When a user asks about a specific subject 
+      (e.g., 'Dentistry', 'Law', 'Computer Science'), you MUST select metrics 
+      directly from the 'guardian_subjects' table. 
+      Do NOT query the 'guardian_ranking' table UNLESS the user explicitly asks 
+      for BOTH subject-level metrics AND overall university metrics (e.g., 
+      "overall ranking", "overall score") in the same question. If both are 
+      requested, perform a standard JOIN between the two tables. 
+      NEVER use subqueries matching years to link the tables
+
+knowledge_graph:
+
+  - name: oxbridge
+
+    terms:
+      - oxbridge
+      - Oxbridge
+      - oxford and cambridge
+      - Oxford and Cambridge
+
+    members:
+      - Oxford
+      - Cambridge
+
+    sql_rule: >
+      "university_name" IN ('Oxford', 'Cambridge')
+
+    description: >
+      Oxbridge is a collective term referring to Oxford
+      and Cambridge. These are the exact institution values
+      used in the database.
+
+  - name: russell_group
+
+    terms:
+      - russell group
+      - Russell Group
+      - russell group universities
+
+    members:
+      - Birmingham
+      - Bristol
+      - Cambridge
+      - Cardiff
+      - Durham
+      - Edinburgh
+      - Exeter
+      - Glasgow
+      - Imperial College
+      - King's College London
+      - Leeds
+      - Liverpool
+      - LSE
+      - Manchester
+      - Newcastle
+      - Nottingham
+      - Oxford
+      - Queen Mary
+      - Queen's University Belfast
+      - Sheffield
+      - Southampton
+      - UCL
+      - Warwick
+      - York
+
+    sql_rule: >
+      "university_name" IN (
+        'Birmingham',
+        'Bristol',
+        'Cambridge',
+        'Cardiff',
+        'Durham',
+        'Edinburgh',
+        'Exeter',
+        'Glasgow',
+        'Imperial College',
+        'King''s College London',
+        'Leeds',
+        'Liverpool',
+        'LSE',
+        'Manchester',
+        'Newcastle',
+        'Nottingham',
+        'Oxford',
+        'Queen Mary',
+        'Queen''s University Belfast',
+        'Sheffield',
+        'Southampton',
+        'UCL',
+        'Warwick',
+        'York'
+      )
+
+    description: >
+      Russell Group represents the listed universities.
+      Institution names must match the source database exactly.
+
+
+  - name: top_3
+
+    terms:
+      - top 3
+      - top three
+      - top-three
+      - top three universities
+
+    sql_rule: >
+      "rank_current" <= 3
+
+  - name: top_5
+
+    terms:
+      - top 5
+      - top five
+      - top-five
+      - top five universities
+
+    sql_rule: >
+      "rank_current" <= 5
+
+  - name: top_10
+
+    terms:
+      - top 10
+      - top ten
+      - top-ten
+      - top ten universities
+
+    sql_rule: >
+      "rank_current" <= 10
+
+  - name: number_one
+
+    terms:
+      - best university
+      - number 1
+      - number one
+      - ranked first
+      - rank first
+      - highest ranked
+      - highest-ranking university
+      - top university
+
+    sql_rule: >
+      "rank_current" = 1
