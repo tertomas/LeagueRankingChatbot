@@ -206,7 +206,7 @@ def generate_sql(client, question, semantic_layer, universities, subjects):
     prompt = create_sql_prompt(question, semantic_layer, universities, subjects)
 
     response = client.chat.completions.create(
-        model="deepseek-ai/DeepSeek-V3",
+        model="deepseek-ai/DeepSeek-V4.1-Flash",
         messages=[{"role": "user","content": prompt}],
         temperature=0)
 
@@ -271,7 +271,7 @@ def explain_metric(client, question, semantic_layer):
         {question}
         """
     response = client.chat.completions.create(
-        model="deepseek-ai/DeepSeek-V3",
+        model="deepseek-ai/DeepSeek-V4.1-Flash",
         messages=[
             {"role": "user","content": prompt
             }],temperature=0)
@@ -281,22 +281,33 @@ def explain_metric(client, question, semantic_layer):
 # determining whether the question is analytical or seeking metric explanation
 def is_metric_question(client, question, semantic_layer):
     response = client.chat.completions.create(
-        model="deepseek-ai/DeepSeek-V3",
+        model="deepseek-ai/DeepSeek-V4.1-Flash",
         messages=[
             {
                 "role": "user",
                 "content": f"""
-                Is the following question asking for the meaning or definition
-                of a metric described in the semantic layer?
+                You are a routing assistant. Classify the user's question.
+                Is the user asking for the MEANING, DEFINITION, or EXPLANATION of a metric?
 
-                Answer only YES or NO.
+                RULES:
+                - If the user wants to know WHAT a metric means or how it is calculated, answer YES.
+                - If the user is asking for actual DATA, NUMBERS, SCORES, RANKINGS, AVERAGES, or VALUES from the database, answer NO.
 
-                SEMANTIC LAYER:
-                {semantic_layer}
+                EXAMPLES:
+                "What does value added mean?" -> YES
+                "Explain teaching satisfaction." -> YES
+                "What is the definition of career prospects?" -> YES
+                
+                "What is the average teaching satisfaction for Law?" -> NO
+                "Top 5 universities by guardian score" -> NO
+                "What was the value added for Oxford in 2020?" -> NO
+                "Which university has the highest satisfaction?" -> NO
+
+                Answer ONLY with exactly YES or NO.
 
                 QUESTION:
                 {question}
-                """}], temperature=0)
+            """}], temperature=0)
 
     return response.choices[0].message.content.strip() == "YES"
 
