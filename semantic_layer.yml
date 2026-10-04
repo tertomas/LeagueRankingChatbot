@@ -384,8 +384,8 @@ tables:
 joins:
 
   - name: ranking_to_subjects
-    left_table: guardian_ranking
-    right_table: guardian_subjects
+    left_table: ranking
+    right_table: subject_areas
 
     condition: >
       ranking."university_name" = subject_areas."university_name" AND
@@ -397,7 +397,7 @@ default_behavior:
   unspecified_year_rule:
     target_columns: ["ranking_year"]
     instruction: >
-      Whenever querying BOTH 'guardian_ranking' and 'guardian_subjects' tables, 
+      Whenever querying BOTH 'ranking' and 'subject_areas' tables, 
       if the user does not explicitly filter by a specific year, 
       you MUST NOT aggregate data across multiple years into a single number. 
       Instead, you MUST include "ranking_year" in your SELECT and GROUP BY clauses 
@@ -407,8 +407,8 @@ default_behavior:
     instruction: >
       When a user asks about a specific subject 
       (e.g., 'Dentistry', 'Law', 'Computer Science'), you MUST select metrics 
-      directly from the 'guardian_subjects' table. 
-      Do NOT query the 'guardian_ranking' table UNLESS the user explicitly asks 
+      directly from the 'subject_areas' table. 
+      Do NOT query the 'ranking' table UNLESS the user explicitly asks 
       for BOTH subject-level metrics AND overall university metrics (e.g., 
       "overall ranking", "overall score") in the same question. If both are 
       requested, perform a standard JOIN between the two tables. 

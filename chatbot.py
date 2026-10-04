@@ -63,12 +63,17 @@ def create_sql_prompt(question, semantic_layer, universities, subjects):
         'guardian_subjects', or any other names from the semantic layer as SQL table names.
         - COLUMN NAMES: The semantic layer contains "name" and "sql_column". 
         ALWAYS use the value of "sql_column" as the column name. NEVER use the semantic "name".
-        - When writing SQL, ALWAYS use the value of "sql_column" as the column name.
         - NEVER use the semantic "name" directly as a SQL column name.
         - When the user refers to a university, use a university name
         from AVAILABLE UNIVERSITIES.
         - When the user refers to a subject, use a subject name
         from AVAILABLE SUBJECT AREAS.
+        - COLUMN-TABLE MAPPING: You MUST strictly check which table a metric or dimension 
+        belongs to in the semantic layer. NEVER use a column from the 'ranking' table on the 
+        'subject_areas' table, and vice versa.
+        - STRICT SQL_COLUMN RULE: If you need a metric like "satisfaction" or "feedback", 
+        look at the exact "sql_column" in the YAML for that specific table. 
+        Do not invent hybrid column names.
         - Do not invent university or subject names.
         - If the question cannot be answered using the available database
         tables, columns, and semantic layer, return exactly:
@@ -162,6 +167,59 @@ def create_sql_prompt(question, semantic_layer, universities, subjects):
         King's College London
         must be written as:
         'King''s College London'
+
+        CROSS-TABLE QUESTIONS:
+        - If the user asks for subject-level information together with
+        overall university information, you MUST query both
+        `subject_areas` and `ranking`.
+
+        - Join the tables using:
+        subject_areas.university_name = ranking.university_name
+        AND subject_areas.ranking_year = ranking.ranking_year.
+
+        - Never join the tables only on university_name.
+        - When the user specifies a year, apply the same year filter
+        to both tables.
+
+        - For questions such as:
+        "Give me the top 5 subjects in 2014 and compare them with
+        the overall ranking of the university",
+        return at least:
+            subject_areas.subject_name,
+            subject_areas.university_name,
+            subject_areas.subject_rank_current,
+            ranking.rank_current,
+            ranking.ranking_year.
+
+        - "Best ranked subject" means the lowest
+        `subject_rank_current` value.
+        - Therefore rank 1 is better than rank 2, rank 2 is better than rank 3, etc.CROSS-TABLE QUESTIONS:
+
+        - If the user asks for subject-level information together with
+        overall university information, you MUST query both
+        `subject_areas` and `ranking`.
+
+        - Join the tables using:
+        subject_areas.university_name = ranking.university_name
+        AND subject_areas.ranking_year = ranking.ranking_year.
+
+        - Never join the tables only on university_name.
+        - When the user specifies a year, apply the same year filter
+        to both tables.
+
+        - For questions such as:
+        "Give me the top 5 subjects in 2014 and compare them with
+        the overall ranking of the university",
+        return at least:
+            subject_areas.subject_name,
+            subject_areas.university_name,
+            subject_areas.subject_rank_current,
+            ranking.rank_current,
+            ranking.ranking_year.
+
+        - "Best ranked subject" means the lowest
+        `subject_rank_current` value.
+        - Therefore rank 1 is better than rank 2, rank 2 is better than rank 3, etc.
 
         USER QUESTION:
         {question}

@@ -14,28 +14,34 @@ with st.form("question_form"):
 # Action on form submission or pressing enter
 if submitted:
     if question:
-        sql, result, status = ask_question(question)
+        try:
+            sql, result, status = ask_question(question)
 
-        # Question does not match the data
-        if status == "CANNOT_ANSWER":
-            st.warning("I can't answer this question using the available database.")
+            # Question does not match the data
+            if status == "CANNOT_ANSWER":
+                st.warning("I can't answer this question using the available database.")
 
-        # Explain type question
-        elif status == "EXPLANATION":
-            st.subheader("Explanation")
-            st.write(result)
+            # Explain type question
+            elif status == "EXPLANATION":
+                st.subheader("Explanation")
+                st.write(result)
 
-        # SQL type question
-        else:
-            with st.expander("Show generated SQL"):
-                st.code(sql, language="sql")
-
-            if status == "NO_DATA":
-                st.warning("I couldn't find any data matching your question."                )
-
+            # SQL type question
             else:
-                st.subheader("Answer")
-                st.dataframe(result)
+                with st.expander("Show generated SQL"):
+                    st.code(sql, language="sql")
+
+                if status == "NO_DATA":
+                    st.warning("I couldn't find any data matching your question."                )
+
+                else:
+                    st.subheader("Answer")
+                    st.dataframe(result)
+
+        except Exception as e:
+            st.error("Oops! Something went wrong while processing your request.")            
+            with st.expander("Error details (for debugging)"):
+                st.write(str(e))
 
     else:
         st.warning("Please enter a question.")
